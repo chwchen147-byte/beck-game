@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Beck 認知治療體驗</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fdfaf6;color:#493d49;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif;line-height:1.7}.app{max-width:480px;margin:auto;min-height:100vh;padding:24px 20px 40px}.top{text-align:center;font-size:13px;color:#947b92;letter-spacing:2px}.panel{margin-top:22px;background:white;border:1px solid #eee4e8;border-radius:24px;padding:24px;box-shadow:0 12px 35px #78607812}.tag{font-size:12px;color:#a07e9d;letter-spacing:2px}.art{background:#f7eff5;border-radius:20px;margin:20px 0;padding:24px;text-align:center;font-size:68px}.story{font-size:17px;margin:14px 0 22px}.question{font-weight:700;font-size:18px}.option{width:100%;text-align:left;background:#fff;border:1.5px solid #e7d9e4;border-radius:15px;padding:14px 16px;margin:9px 0;color:#493d49;font-size:15px;line-height:1.5}.option:active{background:#f6edf5}.btn{width:100%;border:0;border-radius:15px;padding:15px;margin-top:18px;background:#b68cae;color:white;font-size:16px;font-weight:700}.note{background:#f7f0f5;border-radius:16px;padding:18px;margin-top:18px}.small{font-size:13px;color:#877986}.center{text-align:center}.progress{height:5px;background:#eee5ed;border-radius:10px;margin:20px 0}.bar{height:100%;background:#b68cae;border-radius:10px;transition:width .3s}h1{font-size:27px;line-height:1.4}h2{font-size:22px}.hidden{display:none}
+</style>
+</head>
+<body>
+<main class="app">
+<div class="top">BECK COGNITIVE THERAPY</div>
+<div class="progress"><div class="bar" id="bar" style="width:0%"></div></div>
+<div class="panel" id="screen"></div>
+</main>
+<script>
+const scenes=[
+{title:"第一幕｜已讀不回",art:"💬",story:"你傳訊息給朋友，過了一個小時，畫面仍停留在「已讀」。",q:"朋友已讀不回，你的第一個想法是？",opts:["他是不是討厭我？","他可能正在忙。","我是不是說錯話了？","他可能忘記回覆。"],feel:["你可能開始擔心這段友情，忍不住反覆查看手機。","你可能有些好奇，但決定先做自己的事。","你可能回想剛才說過的話，感到不安。","你可能有點失落，但也想到其他可能。"],clue:"目前知道的是朋友已讀未回，還不知道真正原因。"},
+{title:"第二幕｜課堂報告",art:"📚",story:"你正在台上報告，突然注意到老師皺起眉頭。",q:"老師看著你的報告皺眉，你的第一個想法是？",opts:["老師一定覺得我講得很差。","老師可能正在思考。","我的內容是不是有問題？","老師可能只是累了。"],feel:["你可能越講越緊張，開始懷疑自己的表現。","你可能繼續報告，等待老師之後的回饋。","你可能開始擔心內容有錯，變得有點分心。","你可能注意到表情，但暫時不下定論。"],clue:"你看見老師皺眉，但尚未知道他正在想什麼。"},
+{title:"第三幕｜沒有被邀請",art:"🍰",story:"晚上滑手機時，你看見朋友們一起聚餐的照片，卻沒有人約你。",q:"朋友們出去聚餐，卻沒有約你，你的第一個想法是？",opts:["他們是不是不喜歡我？","可能只是臨時約的。","我是不是被排擠了？","他們可能以為我沒空。"],feel:["你可能感到難過，開始懷疑自己在朋友心中的位置。","你可能有點失落，但想到可能有其他原因。","你可能感到孤單，甚至想避開這群朋友。","你可能覺得遺憾，但暫時不把它當成拒絕。"],clue:"你知道朋友們聚餐了，但還不知道沒邀請你的原因。"}
+];
+let index=-1;
+const el=document.getElementById("screen"),bar=document.getElementById("bar");
+function start(){index=0;show()}
+function show(){
+const s=scenes[index];bar.style.width=((index+1)/3*100)+"%";
+el.innerHTML='<div class="tag">SCENE '+(index+1)+' / 3</div><h2>'+s.title+'</h2><div class="art">'+s.art+'</div><p class="story">'+s.story+'</p><div class="question">'+s.q+'</div><div id="choices"></div>';
+document.getElementById("choices").innerHTML=s.opts.map((o,i)=>'<button class="option" onclick="pick('+i+')">'+String.fromCharCode(65+i)+'. '+o+'</button>').join('');
+}
+function pick(i){
+const s=scenes[index];
+el.innerHTML='<div class="tag">SCENE '+(index+1)+' / 3</div><h2>你選擇了……</h2><div class="note">'+s.opts[i]+'</div><h2>此刻，你可能會感受到……</h2><p>'+s.feel[i]+'</p><div class="note"><strong>換個角度想想</strong><p>'+s.clue+'</p><span class="small">這只是一種可能的情緒反應，每個人的感受都可能不同。</span></div><button class="btn" onclick="next()">'+(index===2?'看看最後的訊息':'繼續故事 →')+'</button>';
+}
+function next(){index++;if(index<3)show();else finish()}
+function finish(){
+bar.style.width="100%";
+el.innerHTML='<div class="center"><div class="art">🧠 ✨</div><h1>Beck 認知治療體驗</h1><h2>你有發現嗎？</h2></div><p>面對同一件事情，不同的人可能產生不同的想法，而這些想法也可能影響我們的情緒與行為。</p><div class="note"><strong>想法不一定等於事實。</strong><p>當負面想法出現時，我們可以先檢視證據，再思考是否存在其他合理的解釋。</p></div><p class="small center">認知治療不是強迫自己正向思考，而是練習用更符合證據、較平衡的方式理解事件。</p><button class="btn" onclick="location.reload()">重新體驗 ↻</button>';
+}
+el.innerHTML='<div class="center"><div class="art">☁️ 💭</div><h1>Beck 認知治療體驗</h1><p>同樣的事情，為什麼每個人的感受會不一樣？</p><p class="small">三個生活情境・沒有標準答案・約 3–5 分鐘</p><button class="btn" onclick="start()">開始體驗 →</button></div>';
+</script>
+</body>
+</html>
