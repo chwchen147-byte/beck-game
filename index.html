@@ -1,43 +1,675 @@
 <!DOCTYPE html>
+
 <html lang="zh-Hant">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Beck 認知治療體驗</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Beck 認知治療體驗 2.0</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#fdfaf6;color:#493d49;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif;line-height:1.7}.app{max-width:480px;margin:auto;min-height:100vh;padding:24px 20px 40px}.top{text-align:center;font-size:13px;color:#947b92;letter-spacing:2px}.panel{margin-top:22px;background:white;border:1px solid #eee4e8;border-radius:24px;padding:24px;box-shadow:0 12px 35px #78607812}.tag{font-size:12px;color:#a07e9d;letter-spacing:2px}.art{background:#f7eff5;border-radius:20px;margin:20px 0;padding:24px;text-align:center;font-size:68px}.story{font-size:17px;margin:14px 0 22px}.question{font-weight:700;font-size:18px}.option{width:100%;text-align:left;background:#fff;border:1.5px solid #e7d9e4;border-radius:15px;padding:14px 16px;margin:9px 0;color:#493d49;font-size:15px;line-height:1.5}.option:active{background:#f6edf5}.btn{width:100%;border:0;border-radius:15px;padding:15px;margin-top:18px;background:#b68cae;color:white;font-size:16px;font-weight:700}.note{background:#f7f0f5;border-radius:16px;padding:18px;margin-top:18px}.small{font-size:13px;color:#877986}.center{text-align:center}.progress{height:5px;background:#eee5ed;border-radius:10px;margin:20px 0}.bar{height:100%;background:#b68cae;border-radius:10px;transition:width .3s}h1{font-size:27px;line-height:1.4}h2{font-size:22px}.hidden{display:none}
+
+*{box-sizing:border-box}
+
+body{
+
+  margin:0;background:#FDFAF6;color:#493D49;
+
+  font-family:-apple-system,BlinkMacSystemFont,
+
+  "Noto Sans TC",sans-serif;line-height:1.7
+
+}
+
+.app{max-width:480px;margin:auto;min-height:100vh;padding:25px 20px 45px}
+
+.top{text-align:center;font-size:12px;letter-spacing:2px;color:#9B8299}
+
+.progress{height:6px;background:#EEE5ED;border-radius:20px;margin:20px 0}
+
+.bar{height:100%;width:0;background:#B68CAE;border-radius:20px;transition:width .3s}
+
+.panel{
+
+  background:white;border:1px solid #EEE4E8;
+
+  border-radius:24px;padding:23px;
+
+  box-shadow:0 12px 35px #78607812
+
+}
+
+.tag{font-size:12px;letter-spacing:2px;color:#A07E9D}
+
+h1{font-size:26px;line-height:1.45}
+
+h2{font-size:21px;line-height:1.5}
+
+h3{font-size:17px}
+
+.art{
+
+  background:#F7EFF5;border-radius:20px;
+
+  margin:20px 0;padding:24px;text-align:center;font-size:58px
+
+}
+
+.story{font-size:16px;margin:18px 0}
+
+.question{font-size:17px;font-weight:700;margin:22px 0 12px}
+
+.option{
+
+  display:block;width:100%;text-align:left;background:#FFF;
+
+  border:1.5px solid #E7D9E4;border-radius:15px;
+
+  padding:14px 16px;margin:9px 0;
+
+  color:#493D49;font-size:15px;line-height:1.6;
+
+  cursor:pointer
+
+}
+
+.option.selected{background:#F7EFF5;border-color:#B68CAE}
+
+.btn{
+
+  display:block;width:100%;border:0;border-radius:15px;
+
+  padding:15px;margin-top:18px;background:#B68CAE;
+
+  color:white;font-size:16px;font-weight:700;cursor:pointer
+
+}
+
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+.secondary{background:#F3EDF2;color:#725A70}
+
+.note{background:#F7F0F5;border-radius:16px;padding:17px;margin:18px 0}
+
+.small{font-size:13px;color:#877986}
+
+.center{text-align:center}
+
+.slider{width:100%;accent-color:#B68CAE;margin:15px 0}
+
+.score{font-size:30px;font-weight:700;text-align:center;color:#A77E9F}
+
+textarea{
+
+  width:100%;min-height:90px;border:1px solid #E7D9E4;
+
+  border-radius:14px;padding:13px;font-size:15px;
+
+  font-family:inherit;resize:vertical
+
+}
+
+.compare{display:flex;gap:12px;margin:18px 0}
+
+.compare div{flex:1;background:#F7EFF5;border-radius:15px;padding:15px;text-align:center}
+
+.compare strong{display:block;font-size:26px}
+
+.divider{height:1px;background:#EEE4E8;margin:20px 0}
+
 </style>
+
 </head>
+
 <body>
+
 <main class="app">
+
 <div class="top">BECK COGNITIVE THERAPY</div>
-<div class="progress"><div class="bar" id="bar" style="width:0%"></div></div>
+
+<div class="progress"><div class="bar" id="bar"></div></div>
+
 <div class="panel" id="screen"></div>
+
 </main>
+
 <script>
+
+const el=document.getElementById("screen");
+
+const bar=document.getElementById("bar");
+
 const scenes=[
-{title:"第一幕｜已讀不回",art:"💬",story:"你傳訊息給朋友，過了一個小時，畫面仍停留在「已讀」。",q:"朋友已讀不回，你的第一個想法是？",opts:["他是不是討厭我？","他可能正在忙。","我是不是說錯話了？","他可能忘記回覆。"],feel:["你可能開始擔心這段友情，忍不住反覆查看手機。","你可能有些好奇，但決定先做自己的事。","你可能回想剛才說過的話，感到不安。","你可能有點失落，但也想到其他可能。"],clue:"目前知道的是朋友已讀未回，還不知道真正原因。"},
-{title:"第二幕｜課堂報告",art:"📚",story:"你正在台上報告，突然注意到老師皺起眉頭。",q:"老師看著你的報告皺眉，你的第一個想法是？",opts:["老師一定覺得我講得很差。","老師可能正在思考。","我的內容是不是有問題？","老師可能只是累了。"],feel:["你可能越講越緊張，開始懷疑自己的表現。","你可能繼續報告，等待老師之後的回饋。","你可能開始擔心內容有錯，變得有點分心。","你可能注意到表情，但暫時不下定論。"],clue:"你看見老師皺眉，但尚未知道他正在想什麼。"},
-{title:"第三幕｜沒有被邀請",art:"🍰",story:"晚上滑手機時，你看見朋友們一起聚餐的照片，卻沒有人約你。",q:"朋友們出去聚餐，卻沒有約你，你的第一個想法是？",opts:["他們是不是不喜歡我？","可能只是臨時約的。","我是不是被排擠了？","他們可能以為我沒空。"],feel:["你可能感到難過，開始懷疑自己在朋友心中的位置。","你可能有點失落，但想到可能有其他原因。","你可能感到孤單，甚至想避開這群朋友。","你可能覺得遺憾，但暫時不把它當成拒絕。"],clue:"你知道朋友們聚餐了，但還不知道沒邀請你的原因。"}
+
+{
+
+ title:"第一關｜察覺自己的想法",
+
+ art:"💬",
+
+ story:"你在小組討論時提出一個建議，但其他組員沒有接話，接著就開始討論下一個主題。",
+
+ thoughts:[
+
+ "他們是不是覺得我的想法很爛？",
+
+ "大家可能還沒理解我的意思。",
+
+ "我是不是不適合參與這個小組？",
+
+ "可能只是討論節奏太快。"
+
+ ]
+
+},
+
+{
+
+ title:"第二關｜區分事實與推測",
+
+ art:"📋",
+
+ story:"你在打工時完成一項工作，主管只回覆「收到」，沒有像平常一樣稱讚你。",
+
+ thoughts:[
+
+ "主管是不是對我不滿意？",
+
+ "主管可能正在忙。",
+
+ "我是不是哪裡做錯了？",
+
+ "主管可能只是簡單確認。"
+
+ ]
+
+},
+
+{
+
+ title:"第三關｜練習認知重建",
+
+ art:"🍰",
+
+ story:"你滑手機時，看見幾位朋友一起聚餐的照片，但這次沒有人邀請你。",
+
+ thoughts:[
+
+ "他們是不是不喜歡我？",
+
+ "可能只是臨時約的。",
+
+ "我是不是被排擠了？",
+
+ "他們可能以為我沒空。"
+
+ ]
+
+}
+
 ];
-let index=-1;
-const el=document.getElementById("screen"),bar=document.getElementById("bar");
-function start(){index=0;show()}
-function show(){
-const s=scenes[index];bar.style.width=((index+1)/3*100)+"%";
-el.innerHTML='<div class="tag">SCENE '+(index+1)+' / 3</div><h2>'+s.title+'</h2><div class="art">'+s.art+'</div><p class="story">'+s.story+'</p><div class="question">'+s.q+'</div><div id="choices"></div>';
-document.getElementById("choices").innerHTML=s.opts.map((o,i)=>'<button class="option" onclick="pick('+i+')">'+String.fromCharCode(65+i)+'. '+o+'</button>').join('');
+
+const feedbacks=[
+
+"回想過去的評價，可以補充背景資訊。但過去的評價不一定代表主管這次的想法。",
+
+"檢查工作內容能提供具體線索。即使有需要修改的地方，也不代表你的整體能力不好。",
+
+"適當詢問能取得直接資訊，減少猜測。不過也需要考慮詢問的時機。",
+
+"先觀察能避免過早下結論。如果擔心持續存在，也可以考慮主動確認。"
+
+];
+
+let step=0;
+
+let answers={};
+
+let selected=null;
+
+function progress(n){
+
+ bar.style.width=n+"%";
+
 }
-function pick(i){
-const s=scenes[index];
-el.innerHTML='<div class="tag">SCENE '+(index+1)+' / 3</div><h2>你選擇了……</h2><div class="note">'+s.opts[i]+'</div><h2>此刻，你可能會感受到……</h2><p>'+s.feel[i]+'</p><div class="note"><strong>換個角度想想</strong><p>'+s.clue+'</p><span class="small">這只是一種可能的情緒反應，每個人的感受都可能不同。</span></div><button class="btn" onclick="next()">'+(index===2?'看看最後的訊息':'繼續故事 →')+'</button>';
+
+function render(html){
+
+ el.innerHTML=html;
+
+ window.scrollTo({top:0,behavior:"instant"});
+
 }
-function next(){index++;if(index<3)show();else finish()}
+
+function button(label,action,disabled=false){
+
+ return '<button class="btn" '+(disabled?'disabled':'')+
+
+ ' onclick="'+action+'">'+label+'</button>';
+
+}
+
+function options(items,callback){
+
+ return items.map((item,i)=>
+
+ '<button class="option" onclick="'+callback+'('+i+')">'+
+
+ String.fromCharCode(65+i)+'. '+item+'</button>'
+
+ ).join("");
+
+}
+
+function sceneIntro(i){
+
+ const s=scenes[i];
+
+ return '<div class="tag">SCENE 0'+(i+1)+' / 03</div>'+
+
+ '<h2>'+s.title+'</h2>'+
+
+ '<div class="art">'+s.art+'</div>'+
+
+ '<p class="story">'+s.story+'</p>';
+
+}
+
+function start(){
+
+ step=1;firstThought(0);
+
+}
+
+function firstThought(i){
+
+ step=i===0?1:i===1?4:8;
+
+ progress(i===0?10:i===1?38:68);
+
+ const s=scenes[i];
+
+ render(sceneIntro(i)+
+
+ '<div class="question">你第一時間會怎麼想？</div>'+
+
+ '<p class="small">請選擇最接近你直覺的答案，沒有標準答案。</p>'+
+
+ options(s.thoughts,'chooseThought'+i));
+
+}
+
+function chooseThought0(i){
+
+ answers.thought1=i;
+
+ emotion1();
+
+}
+
+function chooseThought1(i){
+
+ answers.thought2=i;
+
+ factQuestion();
+
+}
+
+function chooseThought2(i){
+
+ answers.thought3=i;
+
+ emotion3();
+
+}
+
+function emotion1(){
+
+ progress(20);
+
+ render('<div class="tag">SCENE 01 / 03</div>'+
+
+ '<h2>這個想法可能帶來什麼感受？</h2>'+
+
+ '<div class="note">'+scenes[0].thoughts[answers.thought1]+'</div>'+
+
+ '<div class="question">你最可能感受到……</div>'+
+
+ options(["尷尬","難過","生氣","平靜","其他"],'chooseEmotion1'));
+
+}
+
+function chooseEmotion1(i){
+
+ answers.emotion1=["尷尬","難過","生氣","平靜","其他"][i];
+
+ render('<div class="tag">第一關回顧</div>'+
+
+ '<h2>同一件事，可能有不同的解讀</h2>'+
+
+ '<p>你剛剛選擇的想法是：</p>'+
+
+ '<div class="note">'+scenes[0].thoughts[answers.thought1]+'</div>'+
+
+ '<p>你選擇的感受是：<strong>'+answers.emotion1+'</strong></p>'+
+
+ '<p>同樣是「沒有人接話」，不同的人可能有不同想法與情緒。</p>'+
+
+ '<div class="note"><strong>這就是第一步：察覺自動化思考。</strong><p class="small">這裡沒有要判斷哪種情緒才正確。</p></div>'+
+
+ button('進入第二關 →','firstThought(1)'));
+
+}
+
+function factQuestion(){
+
+ progress(48);
+
+ render('<div class="tag">SCENE 02 / 03</div>'+
+
+ '<h2>事實，還是自己的推測？</h2>'+
+
+ '<div class="note">你第一時間想到：'+
+
+ scenes[1].thoughts[answers.thought2]+'</div>'+
+
+ '<div class="question">以下哪一項是目前可以確認的事實？</div>'+
+
+ options([
+
+ "主管不滿意我的工作。",
+
+ "主管只回覆了「收到」。",
+
+ "主管覺得我能力不足。",
+
+ "主管以後不會再稱讚我。"
+
+ ],'chooseFact'));
+
+}
+
+function chooseFact(i){
+
+ answers.fact=i;
+
+ const correct=i===1;
+
+ render('<div class="tag">證據檢驗</div>'+
+
+ '<h2>'+(correct?'你辨認出了可以確認的資訊':'再看看我們真正知道什麼')+'</h2>'+
+
+ '<div class="note"><strong>可以確認：</strong><p>主管回覆了「收到」。</p></div>'+
+
+ '<p>但主管是否不滿意、是否覺得你能力不足，目前都還不能確定。</p>'+
+
+ '<p class="small">這一題有可確認的答案，但目的不是測驗分數，而是練習區分觀察與解釋。</p>'+
+
+ button('繼續 →','checkQuestion()'));
+
+}
+
+function checkQuestion(){
+
+ progress(57);
+
+ render('<div class="tag">SCENE 02 / 03</div>'+
+
+ '<h2>接下來，你會怎麼確認？</h2>'+
+
+ '<p>如果你開始擔心主管對你的工作不滿意，你會怎麼進一步確認？</p>'+
+
+ options([
+
+ "回想主管過去對自己工作的評價。",
+
+ "檢查這次工作是否有具體需要修改的地方。",
+
+ "找適當時機詢問主管是否需要調整。",
+
+ "先觀察後續回饋，不急著做結論。"
+
+ ],'chooseCheck'));
+
+}
+
+function chooseCheck(i){
+
+ answers.check=i;
+
+ render('<div class="tag">第二關回顧</div>'+
+
+ '<h2>你選擇了一種檢驗方式</h2>'+
+
+ '<div class="note">'+feedbacks[i]+'</div>'+
+
+ '<p>這題沒有唯一正確答案。不同方式可以提供不同資訊，也各有侷限。</p>'+
+
+ '<p><strong>重要的是：把想法當成可以檢驗的假設，而不是已經確定的事實。</strong></p>'+
+
+ button('進入第三關 →','firstThought(2)'));
+
+}
+
+function emotion3(){
+
+ progress(75);
+
+ render('<div class="tag">SCENE 03 / 03</div>'+
+
+ '<h2>先觀察自己現在的情緒</h2>'+
+
+ '<div class="note">'+scenes[2].thoughts[answers.thought3]+'</div>'+
+
+ '<div class="question">如果你處在這個情境，最明顯的感受是？</div>'+
+
+ options(["難過","焦慮","生氣","失落","平靜","其他"],'chooseEmotion3'));
+
+}
+
+function chooseEmotion3(i){
+
+ answers.emotion3=["難過","焦慮","生氣","失落","平靜","其他"][i];
+
+ intensityBefore();
+
+}
+
+function intensityBefore(){
+
+ render('<div class="tag">情緒評估｜第一次</div>'+
+
+ '<h2>這份感受有多強烈？</h2>'+
+
+ '<p>你選擇的情緒：<strong>'+answers.emotion3+'</strong></p>'+
+
+ '<p class="small">0 代表完全沒有，100 代表非常強烈。</p>'+
+
+ '<div class="score" id="score">50 / 100</div>'+
+
+ '<input class="slider" type="range" min="0" max="100" step="5" value="50" id="intensity" oninput="document.getElementById(\'score\').textContent=this.value+\' / 100\'">'+
+
+ button('記錄並繼續 →','saveBefore()'));
+
+}
+
+function saveBefore(){
+
+ answers.before=Number(document.getElementById("intensity").value);
+
+ evidence3();
+
+}
+
+function evidence3(){
+
+ progress(82);
+
+ render('<div class="tag">SCENE 03 / 03</div>'+
+
+ '<h2>我們目前知道什麼？</h2>'+
+
+ '<div class="note"><strong>可以確認的事實</strong><p>朋友們聚餐了，而你沒有收到邀請。</p></div>'+
+
+ '<div class="note"><strong>尚未確定的事情</strong><p>朋友們為什麼沒有邀請你。</p></div>'+
+
+ '<div class="question">你會如何看待這個情境？</div>'+
+
+ options([
+
+ "沒被邀請，應該就代表他們不喜歡我。",
+
+ "我有點受傷，但還不知道真正的原因。",
+
+ "只要我不去想，就不會難過。",
+
+ "我應該立刻和所有朋友斷絕往來。"
+
+ ],'chooseReframe'));
+
+}
+
+function chooseReframe(i){
+
+ answers.reframe=i;
+
+ const texts=[
+
+ "這是可以理解的擔心，但目前還沒有足夠證據確定朋友不喜歡你。",
+
+ "這個想法承認了自己的感受，也保留了其他可能性，是比較符合現有證據的理解。",
+
+ "暫時轉移注意力可能有幫助，但不代表原本的想法已經得到檢驗。",
+
+ "想保持距離是可以討論的選擇，但在原因尚不清楚時，不一定需要立刻做出決定。"
+
+ ];
+
+ render('<div class="tag">認知重建練習</div>'+
+
+ '<h2>試著用更平衡的方式理解</h2>'+
+
+ '<div class="note">'+texts[i]+'</div>'+
+
+ '<p>重新思考不是強迫自己相信朋友一定沒有惡意，而是先承認：<strong>目前還不知道全部的事實。</strong></p>'+
+
+ '<div class="question">如果是你，還能想到什麼合理的解釋？</div>'+
+
+ '<textarea id="reflection" placeholder="可以寫下自己的想法，也可以留白，在心裡想一想。"></textarea>'+
+
+ '<p class="small">這份文字只留在目前的遊戲畫面，不會上傳。</p>'+
+
+ button('繼續評估情緒 →','intensityAfter()'));
+
+}
+
+function intensityAfter(){
+
+ progress(92);
+
+ render('<div class="tag">情緒評估｜第二次</div>'+
+
+ '<h2>重新思考後，你的感受有改變嗎？</h2>'+
+
+ '<p>剛才的情緒：<strong>'+answers.emotion3+'</strong></p>'+
+
+ '<p>第一次的強度：<strong>'+answers.before+' / 100</strong></p>'+
+
+ '<div class="question">現在這份感受的強度是多少？</div>'+
+
+ '<div class="score" id="score">50 / 100</div>'+
+
+ '<input class="slider" type="range" min="0" max="100" step="5" value="50" id="intensity" oninput="document.getElementById(\'score\').textContent=this.value+\' / 100\'">'+
+
+ button('看看我的體驗結果 →','finish()'));
+
+}
+
 function finish(){
-bar.style.width="100%";
-el.innerHTML='<div class="center"><div class="art">🧠 ✨</div><h1>Beck 認知治療體驗</h1><h2>你有發現嗎？</h2></div><p>面對同一件事情，不同的人可能產生不同的想法，而這些想法也可能影響我們的情緒與行為。</p><div class="note"><strong>想法不一定等於事實。</strong><p>當負面想法出現時，我們可以先檢視證據，再思考是否存在其他合理的解釋。</p></div><p class="small center">認知治療不是強迫自己正向思考，而是練習用更符合證據、較平衡的方式理解事件。</p><button class="btn" onclick="location.reload()">重新體驗 ↻</button>';
+
+ answers.after=Number(document.getElementById("intensity").value);
+
+ progress(100);
+
+ let message="";
+
+ if(answers.after<answers.before){
+
+  message="這次你的情緒強度降低了。但每個人的反應都可能不同。";
+
+ }else if(answers.after===answers.before){
+
+  message="這次你的情緒強度沒有改變，這也完全沒關係。";
+
+ }else{
+
+  message="這次你的情緒強度提高了。這不代表練習失敗，情緒本來就可能隨著思考而變化。";
+
+ }
+
+ render('<div class="center"><div class="art">🧠 ✨</div>'+
+
+ '<h1>恭喜完成體驗！</h1></div>'+
+
+ '<p>你剛剛練習了三個步驟：</p>'+
+
+ '<div class="note">① 察覺自動化思考<br>② 區分事實與推測、檢驗證據<br>③ 嘗試認知重建</div>'+
+
+ '<h3>第三關的情緒強度</h3>'+
+
+ '<div class="compare"><div>重新思考前<strong>'+answers.before+'</strong></div>'+
+
+ '<div>重新思考後<strong>'+answers.after+'</strong></div></div>'+
+
+ '<p>'+message+'</p>'+
+
+ '<div class="divider"></div>'+
+
+ '<h2 class="center">想法，不一定等於事實。</h2>'+
+
+ '<p>當我們遇到困擾時，可以先察覺自己的想法，再檢視證據，思考是否存在其他合理的解釋。</p>'+
+
+ '<div class="note"><strong>認知治療不是強迫自己正向思考。</strong><p>而是練習用更符合證據、更有彈性的方式理解事情。</p></div>'+
+
+ '<p class="small center">這是一個課堂教育體驗，不是心理診斷或正式治療。遊戲不會儲存或上傳你的答案。</p>'+
+
+ button('重新體驗 ↻','location.reload()'));
+
 }
-el.innerHTML='<div class="center"><div class="art">☁️ 💭</div><h1>Beck 認知治療體驗</h1><p>同樣的事情，為什麼每個人的感受會不一樣？</p><p class="small">三個生活情境・沒有標準答案・約 3–5 分鐘</p><button class="btn" onclick="start()">開始體驗 →</button></div>';
+
+progress(0);
+
+render('<div class="center">'+
+
+ '<div class="art">☁️ 💭</div>'+
+
+ '<h1>Beck 認知治療體驗</h1>'+
+
+ '<p>同樣一件事情，為什麼每個人的感受會不一樣？</p>'+
+
+ '<p class="small">三個生活情境・循序漸進・約 8～10 分鐘</p>'+
+
+ '<div class="note" style="text-align:left">'+
+
+ '<strong>這次你會體驗：</strong><br>'+
+
+ '01 察覺自己的想法<br>'+
+
+ '02 檢視事實與證據<br>'+
+
+ '03 練習重新思考</div>'+
+
+ '<p class="small">沒有分數，也不需要分享個人答案。</p>'+
+
+ button('開始體驗 →','start()')+
+
+ '</div>');
+
 </script>
+
 </body>
+
 </html>
